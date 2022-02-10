@@ -1,3 +1,8 @@
+## VERSION 4.104.0
+_09_02_2022_
+* FIX - T&C selection fixed when changing installments for consumer credits.
+* ENHANCEMENT - Added tests for debin changes.
+
 ## VERSION 4.103.0
 _03_02_2022_
 * FEATURE - Debin support added.
