@@ -16,7 +16,6 @@ import com.mercadopago.android.px.internal.util.ScaleUtil;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
 import com.mercadopago.android.px.internal.viewmodel.GenericLocalized;
-import com.squareup.picasso.RequestCreator;
 
 public class PaymentResultHeader extends ConstraintLayout {
 
@@ -73,18 +72,14 @@ public class PaymentResultHeader extends ConstraintLayout {
 
     private void renderBadge(@NonNull final ImageView badge, @NonNull final Model model) {
         final int size = ScaleUtil.getPxFromDp(BADGE_SIZE_DP, getContext());
-        final RequestCreator requestCreator = PicassoDiskLoader.get(getContext())
+        PicassoDiskLoader.get(getContext())
             .load(TextUtil.isNotEmpty(model.badgeUrl) ? model.badgeUrl : null)
             .transform(new CircleTransform())
             .resize(size, size)
             .centerInside()
-            .noFade();
-
-        if (model.badgeImage != 0) {
-            requestCreator.placeholder(model.badgeImage);
-        }
-
-        requestCreator.into(badge);
+            .noFade()
+            .placeholder(model.badgeImage)
+            .into(badge);
     }
 
     public static final class Model {
