@@ -27,10 +27,7 @@ public class ConsumerCreditsFragment extends PaymentMethodFragment<ConsumerCredi
     private ImageView logo;
     private LinkableTextView topText;
     private LinkableTextView bottomText;
-    protected Integer installment = -1;
-    private RemediesLinkableMapper remediesLinkableMapper = MapperProvider.INSTANCE.getRemediesLinkableMapper();
-
-    private static String INSTALLMENT_SELECTED_EXTRA = "installment_selected";
+    private final RemediesLinkableMapper remediesLinkableMapper = MapperProvider.INSTANCE.getRemediesLinkableMapper();
 
     @NonNull
     public static Fragment getInstance(final ConsumerCreditsDrawableFragmentItem model) {
@@ -47,16 +44,6 @@ public class ConsumerCreditsFragment extends PaymentMethodFragment<ConsumerCredi
     }
 
     @Override
-    public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null) {
-            installment = savedInstanceState.getInt(INSTALLMENT_SELECTED_EXTRA, -1);
-            setInstallment(installment);
-        }
-    }
-
-    @Override
-    @SuppressWarnings("ConstantConditions")
     public void initializeViews(@NonNull final View view) {
         super.initializeViews(view);
         creditsLagout = view.findViewById(R.id.credits_layout);
@@ -67,6 +54,7 @@ public class ConsumerCreditsFragment extends PaymentMethodFragment<ConsumerCredi
         final ConsumerCreditsDisplayInfo displayInfo = model.metadata.displayInfo;
         tintBackground(background, displayInfo.color);
         showDisplayInfo(displayInfo);
+        configureListener();
         view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
     }
 
@@ -83,31 +71,20 @@ public class ConsumerCreditsFragment extends PaymentMethodFragment<ConsumerCredi
         }
     }
 
-    public void updateInstallment(final int installmentSelected) {
-        final View view = getView();
-        if (view != null) {
-            view.post(() -> {
-                if (installment != installmentSelected) {
-                    setInstallment(installmentSelected);
-                }
-            });
-        }
-    }
-
-    public void setInstallment(final int installmentSelected) {
-        if (topText != null) {
-            topText.updateInstallment(installmentSelected);
+    public void configureListener() {
+        final Fragment parent = getParentFragment();
+        LinkableTextView.LinkableTextListener listener = null;
+        if (parent instanceof LinkableTextView.LinkableTextListener) {
+            listener = (LinkableTextView.LinkableTextListener) parent;
         }
 
-        if (bottomText != null) {
-            bottomText.updateInstallment(installmentSelected);
+        if (listener != null && topText != null) {
+            topText.setLinkableTextListener(listener);
         }
-    }
 
-    @Override
-    public void onSaveInstanceState(@NonNull final Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(INSTALLMENT_SELECTED_EXTRA, installment);
+        if (listener != null && bottomText != null) {
+            bottomText.setLinkableTextListener(listener);
+        }
     }
 
     @Override

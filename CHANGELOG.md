@@ -1,3 +1,8 @@
+## VERSION 4.104.0
+_09_02_2022_
+* FIX - T&C selection fixed when changing installments for consumer credits.
+* ENHANCEMENT - Added tests for debin changes.
+
 ## VERSION 4.103.1
 _16_02_2022_
 * FIX - Crash when badge placeholder is 0.
