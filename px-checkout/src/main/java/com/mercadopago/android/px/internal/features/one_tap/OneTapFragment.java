@@ -663,6 +663,11 @@ public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPag
     }
 
     @Override
+    public void setText() {
+        payButtonFragment.setText();
+    }
+
+    @Override
     public void onLoadCardFormSheetOptions(final CardFormBottomSheetModel cardFormBottomSheetModel) {
         final CardFormBottomSheetFragment cardFormSheetContainer =
             CardFormBottomSheetFragment.newInstance(cardFormBottomSheetModel);

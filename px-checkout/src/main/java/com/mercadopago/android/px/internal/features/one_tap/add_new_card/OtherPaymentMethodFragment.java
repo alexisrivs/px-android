@@ -16,6 +16,7 @@ import com.mercadopago.android.px.internal.base.BasePagerFragment;
 import com.mercadopago.android.px.internal.di.CheckoutConfigurationModule;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.features.one_tap.add_new_card.sheet_options.CardFormBottomSheetModel;
+import com.mercadopago.android.px.internal.features.one_tap.slider.Focusable;
 import com.mercadopago.android.px.internal.util.CardFormWrapper;
 import com.mercadopago.android.px.internal.util.ListUtil;
 import com.mercadopago.android.px.internal.util.ViewUtils;
@@ -35,10 +36,28 @@ import static com.mercadopago.android.px.internal.util.AccessibilityUtilsKt.exec
 
 public class OtherPaymentMethodFragment
     extends BasePagerFragment<OtherPaymentMethodPresenter, OtherPaymentMethodFragmentItem>
-    implements AddNewCard.View {
+    implements AddNewCard.View, Focusable {
 
     private View addNewCardView;
     private View offPaymentMethodView;
+    private boolean focused;
+
+    @Override
+    public void onFocusIn() {
+        focused = true;
+        final OnOtherPaymentMethodClickListener listener = ((OnOtherPaymentMethodClickListener) getParentFragment());
+        listener.setText();
+    }
+
+    @Override
+    public void onFocusOut() {
+        focused = false;
+    }
+
+    @Override
+    public boolean hasFocus() {
+        return focused;
+    }
 
     @NonNull
     public static Fragment getInstance(@NonNull final OtherPaymentMethodFragmentItem model) {
@@ -77,6 +96,10 @@ public class OtherPaymentMethodFragment
         if (model.getOfflineMethodsMetadata() != null) {
             configureOffMethods(model.getOfflineMethodsMetadata());
         }
+        if (hasFocus()) {
+            onFocusIn();
+        }
+
     }
 
     private void configureAddNewCard(@NonNull final NewCardMetadata newCardMetadata) {
@@ -157,6 +180,12 @@ public class OtherPaymentMethodFragment
                 return Unit.INSTANCE;
             });
         }
+
+        if (isVisibleToUser) {
+            onFocusIn();
+        } else {
+            onFocusOut();
+        }
     }
 
     protected void loadPrimaryMessageView(@NonNull final View view, @Nullable final Text primaryMessage) {
@@ -200,5 +229,7 @@ public class OtherPaymentMethodFragment
         void onNewCardWithSheetOptions();
 
         void onOtherPaymentMethodClicked();
+
+        void setText();
     }
 }

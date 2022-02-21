@@ -398,4 +398,8 @@ internal class PayButtonFragment : BaseFragment(), PayButton.View, SecurityValid
     fun addOnStateChange(stateChange: PayButton.StateChange) {
         this.payButtonStateChange = stateChange
     }
+
+    fun setText() {
+        button.text = "Agregar"
+    }
 }
