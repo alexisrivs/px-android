@@ -1,7 +1,6 @@
 package com.mercadopago.android.px.internal.features.payment_congrats.model
 
 import android.os.Parcelable
-import com.mercadolibre.android.andesui.message.AndesMessage
 import com.mercadolibre.android.andesui.message.hierarchy.AndesMessageHierarchy
 import com.mercadolibre.android.andesui.message.type.AndesMessageType
 import kotlinx.android.parcel.Parcelize
@@ -11,6 +10,7 @@ import kotlinx.android.parcel.RawValue
 data class PaymentCongratsResponse(
     val loyalty: Loyalty? = null,
     val discount: Discount? = null,
+    val adBanner: AdBanner? = null,
     val expenseSplit: ExpenseSplit? = null,
     private val crossSellings: List<CrossSelling>? = emptyList(),
     val viewReceipt: Action? = null,
@@ -63,6 +63,12 @@ data class PaymentCongratsResponse(
             val campaignId: String?
         ): Parcelable
     }
+
+    @Parcelize
+    data class AdBanner(
+        val urlImage: String,
+        val urlDeepLink: String
+    ): Parcelable
 
     @Parcelize
     data class CrossSelling(

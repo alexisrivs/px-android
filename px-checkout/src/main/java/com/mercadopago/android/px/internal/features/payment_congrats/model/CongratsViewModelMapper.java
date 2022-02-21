@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.mercadolibre.android.mlbusinesscomponents.common.MLBusinessSingleItem;
 import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardViewData;
+import com.mercadolibre.android.mlbusinesscomponents.components.adbanner.MLBusinessAdBannerData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppView;
 import com.mercadolibre.android.mlbusinesscomponents.components.crossselling.MLBusinessCrossSellingBoxData;
@@ -46,7 +47,7 @@ public class CongratsViewModelMapper extends Mapper<PaymentCongratsResponse, Con
     private CongratsViewModel getCongratsViewModel(@NonNull final PaymentCongratsResponse paymentCongratsResponse) {
         final PaymentCongratsResponse.Discount discount = paymentCongratsResponse.getDiscount();
         return new CongratsViewModel(getLoyaltyData(paymentCongratsResponse.getLoyalty()),
-            getDiscountBoxData(discount), getShowAllDiscount(discount),
+            getDiscountBoxData(discount), getAdBannerData(paymentCongratsResponse.getAdBanner()),getShowAllDiscount(discount),
             getDownloadAppData(discount),
             getExpenseSplitData(paymentCongratsResponse.getExpenseSplit()),
             getCrossSellingBoxData(paymentCongratsResponse.getCrossSellings()),
@@ -93,6 +94,27 @@ public class CongratsViewModelMapper extends Mapper<PaymentCongratsResponse, Con
             @Override
             public String getButtonDeepLink() {
                 return action.getTarget();
+            }
+        };
+    }
+
+    @Nullable
+    private MLBusinessAdBannerData getAdBannerData(@Nullable final PaymentCongratsResponse.AdBanner adBanner) {
+
+        if(adBanner == null) {
+            return null;
+        }
+        return new MLBusinessAdBannerData() {
+            @NonNull
+            @Override
+            public String getImageUrl() {
+                return adBanner.getUrlImage();
+            }
+
+            @NonNull
+            @Override
+            public String getUrlDeepLink() {
+                return adBanner.getUrlDeepLink();
             }
         };
     }

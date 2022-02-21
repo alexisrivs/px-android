@@ -346,6 +346,7 @@ public class PaymentCongratsModel implements Parcelable {
         // MLBusinessComponents
         /* default */ PaymentCongratsResponse.Loyalty loyalty;
         /* default */ PaymentCongratsResponse.Discount discount;
+        /* default */ PaymentCongratsResponse.AdBanner adBanner;
         /* default */ List<PaymentCongratsResponse.CrossSelling> crossSelling;
         /* default */ PaymentCongratsResponse.ExpenseSplit expenseSplit;
         /* default */ PaymentCongratsResponse.Action receiptAction;
@@ -384,7 +385,7 @@ public class PaymentCongratsModel implements Parcelable {
                 break;
             }
             paymentCongratsResponse =
-                new PaymentCongratsResponse(loyalty, discount, expenseSplit, crossSelling, receiptAction,
+                new PaymentCongratsResponse(loyalty, discount, adBanner, expenseSplit, crossSelling, receiptAction,
                     customSorting, backUrl, redirectUrl, autoReturn, operationInfo);
 
             return new PaymentCongratsModel(this);
@@ -635,6 +636,15 @@ public class PaymentCongratsModel implements Parcelable {
          */
         public Builder withDiscounts(final PaymentCongratsResponse.Discount discount) {
             this.discount = discount;
+            return this;
+        }
+
+        /**
+         * @param adBanner an object containing the needed info to display ad banner MLBusinessComponent
+         * @return builder with the added object
+         */
+        public Builder withAdBanner(final PaymentCongratsResponse.AdBanner adBanner) {
+            this.adBanner = adBanner;
             return this;
         }
 

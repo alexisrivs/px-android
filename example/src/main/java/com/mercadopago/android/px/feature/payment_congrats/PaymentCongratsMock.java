@@ -40,6 +40,9 @@ public final class PaymentCongratsMock {
         PaymentCongratsResponse.Loyalty loyalty =
             new PaymentCongratsResponse.Loyalty(progress, "Sumaste 1 Mercado Punto", action);
 
+        //Ad Banner
+        PaymentCongratsResponse.AdBanner adBanner = new PaymentCongratsResponse.AdBanner("https://http2.mlstatic.com/D_NQ_750106-MLA46995964779_082021-F.webp", "https://mercadolibre.com.ar");
+
         //Payment Methods
         ArrayList<PaymentInfo> paymentList = new ArrayList();
         paymentList.add(
@@ -91,6 +94,7 @@ public final class PaymentCongratsMock {
             .withShouldShowPaymentMethod(true)
             .withReceipt(PAYMENT_ID, true, null)
             .withDiscounts(discount)
+                .withAdBanner(adBanner)
             .withLoyalty(loyalty)
             .withTracking(tracking)
             .build();

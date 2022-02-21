@@ -10,6 +10,7 @@ import kotlinx.android.parcel.RawValue
 data class CongratsResponse(
     @SerializedName("mpuntos") val score: Score? = null,
     @SerializedName("discounts") val discount: Discount? = null,
+    @SerializedName("ad_banner") val adBanner: AdBanner? = null,
     @SerializedName("expense_split") val moneySplit: MoneySplit? = null,
     @SerializedName("cross_selling") private val crossSellingList: List<CrossSelling>? = emptyList(),
     val viewReceipt: Button? = null,
@@ -69,6 +70,12 @@ data class CongratsResponse(
             val campaignId: String?
         ): Parcelable
     }
+
+    @Parcelize
+    data class AdBanner internal constructor(
+        val urlImage: String,
+        val urlDeepLink: String
+    ): Parcelable
 
     @Parcelize
     data class CrossSelling internal constructor(

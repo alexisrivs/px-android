@@ -17,7 +17,7 @@ public class PaymentCongratsResponseMapper extends Mapper<CongratsResponse, Paym
     @Override
     public PaymentCongratsResponse map(final CongratsResponse congratsResponse) {
         return new PaymentCongratsResponse(getLoyalty(congratsResponse.getScore()),
-            getDiscount(congratsResponse.getDiscount()), getExpenseSplit(congratsResponse.getMoneySplit()),
+            getDiscount(congratsResponse.getDiscount()), getAdBanner(congratsResponse.getAdBanner()),getExpenseSplit(congratsResponse.getMoneySplit()),
             getCrossSelling(congratsResponse.getCrossSellings()),
             getAction(congratsResponse.getViewReceipt()),
             congratsResponse.getCustomOrder(),
@@ -33,6 +33,14 @@ public class PaymentCongratsResponseMapper extends Mapper<CongratsResponse, Paym
                 new PaymentCongratsResponse.Loyalty.Progress(score.getProgress().getPercentage(),
                     score.getProgress().getColor(), score.getProgress().getLevel()), score.getTitle(),
                 getAction(score.getAction()));
+        }
+        return null;
+    }
+
+    private PaymentCongratsResponse.AdBanner getAdBanner(final CongratsResponse.AdBanner adBanner) {
+        if (adBanner != null) {
+            return new PaymentCongratsResponse.AdBanner(adBanner.getUrlImage(),
+                            adBanner.getUrlDeepLink());
         }
         return null;
     }

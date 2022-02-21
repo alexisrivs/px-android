@@ -233,4 +233,9 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
         final CongratsResponse congratsResponse = paymentModel.getCongratsResponse();
         getView().finishWithResult(resultCode, congratsResponse.getBackUrl(), congratsResponse.getRedirectUrl());
     }
+
+    @Override
+    public void OnClickAdBannerViewLink(@Nullable final String deepLink) {
+        getView().launchDeepLink(deepLink);
+    }
 }

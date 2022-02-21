@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.mercadolibre.android.andesui.message.AndesMessage;
 import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardView;
 import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardViewData;
+import com.mercadolibre.android.mlbusinesscomponents.components.adbanner.MLBusinessAdBannerData;
+import com.mercadolibre.android.mlbusinesscomponents.components.adbanner.MLBusinessAdBannerView;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.dividingline.MLBusinessDividingLineView;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppData;
 import com.mercadolibre.android.mlbusinesscomponents.components.common.downloadapp.MLBusinessDownloadAppView;
@@ -43,7 +45,7 @@ public final class PaymentResultBody extends LinearLayout {
     public interface Listener extends MLBusinessLoyaltyRingView.OnClickLoyaltyRing,
         OnClickCallback, MLBusinessDownloadAppView.OnClickDownloadApp,
         MLBusinessCrossSellingBoxView.OnClickCrossSellingBoxView,
-        MLBusinessDiscountBoxView.OnClickDiscountBox {
+        MLBusinessDiscountBoxView.OnClickDiscountBox, MLBusinessAdBannerView.OnClickAdBannerView {
 
         void onClickShowAllDiscounts(@NonNull final String deepLink);
 
@@ -84,6 +86,7 @@ public final class PaymentResultBody extends LinearLayout {
         renderFragment(R.id.px_fragment_container_important, model.importantFragment);
         renderLoyalty(model.congratsViewModel.getLoyaltyRingData(), listener);
         renderDiscounts(model.congratsViewModel.getDiscountBoxData(), listener);
+        renderAdBanner(model.congratsViewModel.getAdBannerData(), listener);
         renderShowAllDiscounts(model.congratsViewModel.getShowAllDiscounts(), listener);
         renderDownload(model.congratsViewModel.getDownloadAppData(), listener);
         renderMoneySplit(model.congratsViewModel.getActionCardViewData(), listener);
@@ -120,6 +123,16 @@ public final class PaymentResultBody extends LinearLayout {
         } else {
             loyaltyView.setVisibility(GONE);
             dividingView.setVisibility(GONE);
+        }
+    }
+
+    private void renderAdBanner(@Nullable final MLBusinessAdBannerData adBannerData, @NonNull final Listener onClickAdBanner){
+        final MLBusinessAdBannerView adBannerView = findViewById(R.id.adBannerView);
+
+        if(adBannerData != null) {
+            adBannerView.init(adBannerData, onClickAdBanner);
+        } else {
+            adBannerView.setVisibility(GONE);
         }
     }
 
