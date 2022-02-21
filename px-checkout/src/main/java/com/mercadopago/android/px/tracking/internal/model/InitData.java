@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import com.mercadopago.android.px.configuration.AdvancedConfiguration;
 import com.mercadopago.android.px.configuration.PaymentConfiguration;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
-import com.mercadopago.android.px.internal.util.PaymentConfigurationUtil;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
 
 @SuppressWarnings("unused")
