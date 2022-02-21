@@ -149,10 +149,6 @@ public final class Session extends ApplicationModule {
                 trackingData.getFlowExtraInfo()));
     }
 
-    public void configure() {
-
-    }
-
     @NonNull
     public State getSessionState() {
         try {
