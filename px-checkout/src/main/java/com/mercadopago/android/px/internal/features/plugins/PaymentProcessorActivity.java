@@ -118,8 +118,7 @@ public final class PaymentProcessorActivity extends PXActivity
             session.getUseCaseModule().getValidationProgramUseCase();
 
         final com.mercadopago.android.px.core.v2.PaymentProcessor paymentProcessor =
-            PaymentConfigurationUtil.getPaymentProcessor(paymentSettings
-                .getPaymentConfiguration());
+            paymentSettings.getPaymentConfiguration().getPaymentProcessorV2();
 
         final List<PaymentData> paymentData = session
             .getPaymentRepository()

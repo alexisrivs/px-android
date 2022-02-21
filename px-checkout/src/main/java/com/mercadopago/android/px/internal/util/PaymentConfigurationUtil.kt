@@ -8,7 +8,7 @@ import com.mercadopago.android.px.core.v2.PaymentProcessor
  */
 internal object PaymentConfigurationUtil {
     @JvmStatic
-    fun getPaymentProcessor(paymentConfiguration: PaymentConfiguration): PaymentProcessor {
+    fun getPaymentProcessor(paymentConfiguration: PaymentConfiguration): PaymentProcessor? {
         return paymentConfiguration.paymentProcessorV2
     }
 }

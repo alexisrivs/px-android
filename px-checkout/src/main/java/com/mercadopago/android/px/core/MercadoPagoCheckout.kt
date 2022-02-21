@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.mercadopago.android.px.configuration.AdvancedConfiguration
 import com.mercadopago.android.px.configuration.PaymentConfiguration
+import com.mercadopago.android.px.configuration.ScheduledPaymentMethodType
 import com.mercadopago.android.px.configuration.TrackingConfiguration
 import com.mercadopago.android.px.core.internal.PrefetchService
 import com.mercadopago.android.px.core.internal.PrefetchService.Companion.onCheckoutStarted
@@ -25,6 +26,7 @@ class MercadoPagoCheckout internal constructor(builder: Builder) {
     val checkoutPreference: CheckoutPreference?
     val trackingConfiguration: TrackingConfiguration
     val privateKey: String
+    val scheduledPaymentMethodType: ScheduledPaymentMethodType
 
     internal var prefetch: PrefetchService? = null
 
@@ -36,6 +38,7 @@ class MercadoPagoCheckout internal constructor(builder: Builder) {
         paymentConfiguration = builder.paymentConfiguration
         checkoutPreference = builder.checkoutPreference
         trackingConfiguration = builder.trackingConfiguration
+        scheduledPaymentMethodType = builder.scheduledPaymentMethodType
     }
 
     /**
@@ -77,6 +80,7 @@ class MercadoPagoCheckout internal constructor(builder: Builder) {
         val publicKey: String
         val preferenceId: String?
         val checkoutPreference: CheckoutPreference?
+        internal var scheduledPaymentMethodType = ScheduledPaymentMethodType.NON_SCHEDULED
         internal var advancedConfiguration = AdvancedConfiguration.Builder().build()
         internal var paymentConfiguration = MercadoPagoPaymentConfiguration.create()
         internal var privateKey: String? = null
@@ -157,6 +161,19 @@ class MercadoPagoCheckout internal constructor(builder: Builder) {
          */
         fun setTrackingConfiguration(trackingConfiguration: TrackingConfiguration) = apply {
             this.trackingConfiguration = trackingConfiguration
+        }
+
+
+        /**
+         * Provides additional settings to modify the types of payment methods to display at checkout.
+         * These can be programmable payment methods (SCHEDULED), non-programmable payment methods (NON_SCHEDULED),
+         * or all (ALL).
+         *
+         * @param scheduledPaymentMethodType your configuration.
+         * @return builder to keep operating
+         */
+        fun setScheduledPaymentMethodsConfiguration(scheduledPaymentMethodType: ScheduledPaymentMethodType) = apply {
+            this.scheduledPaymentMethodType = scheduledPaymentMethodType
         }
 
         /**

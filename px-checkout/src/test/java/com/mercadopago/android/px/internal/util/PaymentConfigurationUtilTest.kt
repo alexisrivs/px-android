@@ -21,6 +21,6 @@ class PaymentConfigurationUtilTest {
     @Test
     fun getPaymentProcessorShouldReturnProcessorV2() {
         whenever(paymentConfiguration.paymentProcessorV2).thenReturn(processor)
-        PaymentConfigurationUtil.getPaymentProcessor(paymentConfiguration).assertEquals(processor)
+        PaymentConfigurationUtil.getPaymentProcessor(paymentConfiguration)?.assertEquals(processor)
     }
 }

@@ -1,38 +1,54 @@
 package com.mercadopago.android.px.core
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
+import com.mercadopago.android.px.configuration.AdvancedConfiguration
+import com.mercadopago.android.px.configuration.PaymentConfiguration
 import com.mercadopago.android.px.configuration.DynamicDialogConfiguration
-import com.mercadopago.android.px.configuration.CustomStringConfiguration
 import com.mercadopago.android.px.configuration.DiscountParamsConfiguration
 import com.mercadopago.android.px.configuration.TrackingConfiguration
+import com.mercadopago.android.px.configuration.CustomStringConfiguration
 import com.mercadopago.android.px.configuration.ScheduledPaymentMethodType
+import com.mercadopago.android.px.core.internal.NoOpPaymentProcessor
 import com.mercadopago.android.px.internal.core.ProductIdProvider
-import com.mercadopago.android.px.internal.features.checkout.CheckoutActivity
 import com.mercadopago.android.px.model.commission.PaymentTypeChargeRule
 
 class PXPaymentMethodSelector private constructor(builder: Builder) {
 
-    internal val accessToken = builder.accessToken
-    internal val dynamicDialogConfiguration = builder.dynamicDialogConfiguration
-    internal val customStringConfiguration = builder.customStringConfiguration
-    internal val discountParamsConfiguration = builder.discountParamsConfiguration
-    internal val trackingConfiguration = builder.trackingConfiguration
-    internal val scheduledPaymentMethodType = builder.scheduledPaymentMethodType
-    internal val charges = builder.charges
-    internal val productId = builder.productId
+    val accessToken = builder.accessToken
+    val publicKey = builder.publicKey
+    val preferenceId = builder.preferenceId
+    val dynamicDialogConfiguration = builder.dynamicDialogConfiguration
+    val customStringConfiguration = builder.customStringConfiguration
+    val discountParamsConfiguration = builder.discountParamsConfiguration
+    val trackingConfiguration = builder.trackingConfiguration
+    val scheduledPaymentMethodType = builder.scheduledPaymentMethodType
+    val acceptThirdPartyCard = builder.acceptThirdPartyCard
+    val charges = builder.charges
+    val productId = builder.productId
 
     fun start(activity: Activity, requestCode: Int) {
-        internalStart(activity, requestCode)
-    }
+        val advancedConfiguration = AdvancedConfiguration
+            .Builder()
+            .setAcceptThirdPartyCard(acceptThirdPartyCard)
+            .setCustomStringConfiguration(customStringConfiguration)
+            .setDiscountParamsConfiguration(discountParamsConfiguration)
+            .setDynamicDialogConfiguration(dynamicDialogConfiguration)
+            .setProductId(productId)
+            .build()
 
-    private fun buildIntent(context: Context) : Intent {
-        return CheckoutActivity.getIntent(context, true)
-    }
+        val paymentProcessor = PaymentConfiguration
+            .Builder()
+            .addChargeRules(charges)
+            .setSupportSplit(true)
+            .build()
 
-    private fun internalStart(activity: Activity, requestCode: Int) {
-        activity.startActivityForResult(buildIntent(activity), requestCode)
+        MercadoPagoCheckout.Builder(publicKey, preferenceId, paymentProcessor)
+            .setAdvancedConfiguration(advancedConfiguration)
+            .setPrivateKey(accessToken)
+            .setTrackingConfiguration(trackingConfiguration)
+            .setScheduledPaymentMethodsConfiguration(scheduledPaymentMethodType)
+            .build()
+            .startPayment(activity, requestCode)
     }
 
     class Builder(val publicKey: String, val preferenceId: String) {
@@ -43,6 +59,7 @@ class PXPaymentMethodSelector private constructor(builder: Builder) {
         internal var discountParamsConfiguration = DiscountParamsConfiguration.Builder().build()
         internal var trackingConfiguration = TrackingConfiguration.Builder().build()
         internal var scheduledPaymentMethodType = ScheduledPaymentMethodType.NON_SCHEDULED
+        internal var acceptThirdPartyCard = false
         internal var charges: List<PaymentTypeChargeRule> = emptyList()
         internal var productId: String = ProductIdProvider.DEFAULT_PRODUCT_ID
 
@@ -85,6 +102,16 @@ class PXPaymentMethodSelector private constructor(builder: Builder) {
          */
         fun setDiscountParamsConfiguration(discountParamsConfiguration: DiscountParamsConfiguration) = apply {
             this.discountParamsConfiguration = discountParamsConfiguration
+        }
+
+        /**
+         * It provides support for third party card
+         *
+         * @param supportThirdPartyCard your configuration.
+         * @return builder to keep operating
+         */
+        fun setSupportThirdPartyCard(supportThirdPartyCard: Boolean) = apply {
+            this.acceptThirdPartyCard = supportThirdPartyCard
         }
 
         /**

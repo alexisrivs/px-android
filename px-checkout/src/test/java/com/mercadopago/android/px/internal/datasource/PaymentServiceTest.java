@@ -106,6 +106,7 @@ public class PaymentServiceTest {
     @Mock private ApplicationSelectionRepository applicationSelectionRepository;
     @Mock private AdvancedConfiguration advancedConfiguration;
     @Mock private PostPaymentConfiguration postPaymentConfiguration;
+    @Mock private com.mercadopago.android.px.configuration.PaymentConfiguration paymentConfiguration;
 
     @Mock private OneTapItem node;
     @Mock private PayerCost payerCost;
@@ -154,10 +155,8 @@ public class PaymentServiceTest {
         when(applicationPaymentMethod.getType()).thenReturn(PaymentTypes.CREDIT_CARD);
         when(application.getPaymentMethod()).thenReturn(applicationPaymentMethod);
         when(paymentSettingRepository.getCheckoutPreference()).thenReturn(mock(CheckoutPreference.class));
-        when(paymentSettingRepository.getPaymentConfiguration())
-            .thenReturn(mock(com.mercadopago.android.px.configuration.PaymentConfiguration.class));
-        when(PaymentConfigurationUtil.getPaymentProcessor(paymentSettingRepository.getPaymentConfiguration()))
-            .thenReturn(paymentProcessor);
+        when(paymentSettingRepository.getPaymentConfiguration()).thenReturn(paymentConfiguration);
+        when(paymentConfiguration.getPaymentProcessorV2()).thenReturn(paymentProcessor);
         when(discountRepository.getCurrentConfiguration()).thenReturn(WITHOUT_DISCOUNT);
         when(userSelectionRepository.getPaymentMethod()).thenReturn(paymentMethod);
         when(paymentMethod.getId()).thenReturn(PaymentMethods.ARGENTINA.AMEX);

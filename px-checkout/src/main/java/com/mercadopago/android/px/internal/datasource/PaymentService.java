@@ -419,8 +419,9 @@ public class PaymentService implements PaymentRepository {
             .build();
     }
 
+    @Nullable
     private PaymentProcessor getPaymentProcessor() {
-        return PaymentConfigurationUtil.getPaymentProcessor(paymentSettingRepository.getPaymentConfiguration());
+        return paymentSettingRepository.getPaymentConfiguration().getPaymentProcessorV2();
     }
 
     @Override

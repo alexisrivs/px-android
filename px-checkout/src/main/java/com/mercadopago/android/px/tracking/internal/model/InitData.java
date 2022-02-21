@@ -24,8 +24,7 @@ public final class InitData extends TrackingMapModel {
         checkoutPreferenceId = preferenceId;
         checkoutPreference = preference;
         expressEnabled = advancedConfiguration.isExpressPaymentEnabled();
-        splitEnabled = preference != null &&
-            PaymentConfigurationUtil.getPaymentProcessor(paymentConfiguration).supportsSplitPayment(preference);
+        splitEnabled = preference != null && paymentConfiguration.getSupportsSplit(preference);
         escEnabled = true;
     }
 
