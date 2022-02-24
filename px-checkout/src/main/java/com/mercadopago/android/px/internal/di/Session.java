@@ -350,7 +350,7 @@ public final class Session extends ApplicationModule {
                 getPlatform(getApplicationContext()), configurationModule.getTrackingRepository(),
                 configurationModule.getUserSelectionRepository(), getAmountRepository(),
                 configurationModule.getDisabledPaymentMethodRepository(),
-                configurationModule.getPayerComplianceRepository(), getMercadoPagoESC(), getOneTapItemRepository(),
+                getMercadoPagoESC(), getOneTapItemRepository(),
                 configurationModule.getPaymentSettings(), getPayerPaymentMethodRepository(),
                 MapperProvider.INSTANCE.getAlternativePayerPaymentMethodsMapper(),
                 configurationModule.getAuthorizationProvider()

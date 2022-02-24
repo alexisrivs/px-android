@@ -6,10 +6,13 @@ import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
 @Parcelize
-data class BankTransferDisplayInfo(val result: Result) : Serializable, Parcelable {
+data class CustomSearchItemDisplayInfo(val result: Result) : Serializable, Parcelable {
     @Parcelize
-    data class Result(val paymentMethod: PaymentMethod) : Serializable, Parcelable {
+    data class Result(val paymentMethod: PaymentMethod?, val extraInfo: ExtraInfo?) : Serializable, Parcelable {
         @Parcelize
         data class PaymentMethod(val iconUrl: String, val detail: List<Text>) : Serializable, Parcelable
+
+        @Parcelize
+        data class ExtraInfo(val detail: List<Text>) : Serializable, Parcelable
     }
 }

@@ -407,7 +407,7 @@ public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPag
             session.getAmountConfigurationRepository(),
             session.getConfigurationModule().getChargeRepository(),
             session.getMercadoPagoESC(),
-            session.getExperimentsRepository(), configurationModule.getPayerComplianceRepository(),
+            session.getExperimentsRepository(),
             configurationModule.getTrackingRepository(), configurationModule.getCustomTextsRepository(),
             session.getOneTapItemRepository(), session.getPayerPaymentMethodRepository(), session.getModalRepository(),
             session.getCustomOptionIdSolver(),

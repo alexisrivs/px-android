@@ -1,5 +1,7 @@
 package com.mercadopago.android.px.internal.helpers
 
+import com.mercadopago.android.px.assertEquals
+import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsText
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo
 import com.mercadopago.android.px.internal.features.payment_result.model.DisplayInfoHelper
 import com.mercadopago.android.px.internal.repository.PayerPaymentMethodRepository
@@ -7,15 +9,18 @@ import com.mercadopago.android.px.internal.repository.UserSelectionRepository
 import com.mercadopago.android.px.model.CustomSearchItem
 import com.mercadopago.android.px.model.PaymentData
 import com.mercadopago.android.px.model.PaymentMethod
-import com.mercadopago.android.px.model.display_info.BankTransferDisplayInfo
+import com.mercadopago.android.px.model.display_info.CustomSearchItemDisplayInfo
+import com.mercadopago.android.px.model.display_info.CustomSearchItemDisplayInfo.Result.ExtraInfo
 import com.mercadopago.android.px.model.display_info.DisplayInfo
 import com.mercadopago.android.px.model.display_info.ResultInfo
 import com.mercadopago.android.px.model.internal.Text
+import com.mercadopago.android.px.model.internal.TextAlignment
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockkClass
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 
@@ -34,8 +39,15 @@ class DisplayInfoHelperTest {
 
     @MockK
     private lateinit var payerPaymentMethodRepository: PayerPaymentMethodRepository
+
     @MockK
     private lateinit var userSelectionRepository: UserSelectionRepository
+
+    @MockK
+    private lateinit var paymentData: PaymentData
+
+    @MockK
+    private lateinit var payerPaymentMethod: CustomSearchItem
 
     private lateinit var displayInfoHelper: DisplayInfoHelper
 
@@ -46,41 +58,25 @@ class DisplayInfoHelperTest {
     }
 
     @Test
-    fun `when payment method is DEBIN then return texts details from display info in payment info`() {
-        val payerPaymentMethod = mockkClass(CustomSearchItem::class)
-        val paymentData = mockkClass(PaymentData::class)
+    fun `given payment method info comes from payerPaymentMethod then paymentInfo texts are taken from payerPaymentMethod display info`() {
         val paymentInfoBuilder = PaymentInfo.Builder()
-        val title = mockkClass(Text::class) {
-            every { message } returns DESCRIPTION_TITLE
-            every { backgroundColor } returns BACKGROUND_COLOR
-            every { textColor } returns TEXT_COLOR
-            every { weight } returns WEIGHT
-        }
-        val bankName = mockkClass(Text::class) {
-            every { message } returns BANK_NAME
-            every { backgroundColor } returns BACKGROUND_COLOR
-            every { textColor } returns TEXT_COLOR
-            every { weight } returns WEIGHT
-        }
-        val cbu = mockkClass(Text::class) {
-            every { message } returns CBU
-            every { backgroundColor } returns BACKGROUND_COLOR
-            every { textColor } returns TEXT_COLOR
-            every { weight } returns WEIGHT
-        }
+        val title = Text(DESCRIPTION_TITLE, BACKGROUND_COLOR, TEXT_COLOR, WEIGHT, null)
+        val bankName = Text(BANK_NAME, BACKGROUND_COLOR, TEXT_COLOR, WEIGHT, null)
+        val cbu = Text(CBU, BACKGROUND_COLOR, TEXT_COLOR, WEIGHT, null)
 
-        val bankTransferDisplayInfoResultPaymentMethod = mockkClass(BankTransferDisplayInfo.Result.PaymentMethod::class) {
+        val customSearchItemDisplayInfoResultPaymentMethod = mockkClass(CustomSearchItemDisplayInfo.Result.PaymentMethod::class) {
             every { detail } returns listOf(title, bankName, cbu)
             every { iconUrl } returns ICON_URL
         }
-        val bankTransferDisplayInfoResult = mockkClass(BankTransferDisplayInfo.Result::class) {
-            every { paymentMethod } returns bankTransferDisplayInfoResultPaymentMethod
+        val customSearchItemDisplayInfoResult = mockkClass(CustomSearchItemDisplayInfo.Result::class) {
+            every { paymentMethod } returns customSearchItemDisplayInfoResultPaymentMethod
+            every { extraInfo } returns null
         }
-        val bankTransferDisplayInfo = mockkClass(BankTransferDisplayInfo::class) {
-            every { result } returns bankTransferDisplayInfoResult
+        val customSearchItemDisplayInfo = mockkClass(CustomSearchItemDisplayInfo::class) {
+            every { result } returns customSearchItemDisplayInfoResult
         }
 
-        every { payerPaymentMethod.bankTransferDisplayInfo } returns bankTransferDisplayInfo
+        every { payerPaymentMethod.displayInfo } returns customSearchItemDisplayInfo
         every { userSelectionRepository.customOptionId } returns CUSTOM_OPTION_ID
         every { payerPaymentMethodRepository[CUSTOM_OPTION_ID] } returns payerPaymentMethod
 
@@ -88,50 +84,38 @@ class DisplayInfoHelperTest {
 
         val paymentInfo = paymentInfoBuilder.build()
 
-        assertEquals(DESCRIPTION_TITLE, paymentInfo.descriptionText!!.message)
-        assertEquals(BACKGROUND_COLOR, paymentInfo.descriptionText!!.backgroundColor)
-        assertEquals(TEXT_COLOR, paymentInfo.descriptionText!!.textColor)
-        assertEquals(WEIGHT, paymentInfo.descriptionText!!.weight)
+        assertNotNull(paymentInfo.details)
+        paymentInfo.details!!.size.assertEquals(3)
 
-        assertEquals(BANK_NAME, paymentInfo.paymentMethodDescriptionText!!.message)
-        assertEquals(BACKGROUND_COLOR, paymentInfo.paymentMethodDescriptionText!!.backgroundColor)
-        assertEquals(TEXT_COLOR, paymentInfo.paymentMethodDescriptionText!!.textColor)
-        assertEquals(WEIGHT, paymentInfo.paymentMethodDescriptionText!!.weight)
+        with(paymentInfo.details!![0]) {
+            assertEquals(DESCRIPTION_TITLE, message)
+            assertEquals(BACKGROUND_COLOR, backgroundColor)
+            assertEquals(TEXT_COLOR, textColor)
+            assertEquals(WEIGHT, weight)
+            assertEquals(TextAlignment.LEFT, alignment)
+        }
 
-        assertEquals(CBU, paymentInfo.statementText!!.message)
-        assertEquals(BACKGROUND_COLOR, paymentInfo.statementText!!.backgroundColor)
-        assertEquals(TEXT_COLOR, paymentInfo.statementText!!.textColor)
-        assertEquals(WEIGHT, paymentInfo.statementText!!.weight)
+        with(paymentInfo.details!![1]) {
+            assertEquals(BANK_NAME, message)
+            assertEquals(BACKGROUND_COLOR, backgroundColor)
+            assertEquals(TEXT_COLOR, textColor)
+            assertEquals(WEIGHT, weight)
+            assertEquals(TextAlignment.LEFT, alignment)
+        }
+
+        with(paymentInfo.details!![2]) {
+            assertEquals(CBU, message)
+            assertEquals(BACKGROUND_COLOR, backgroundColor)
+            assertEquals(TEXT_COLOR, textColor)
+            assertEquals(WEIGHT, weight)
+            assertEquals(TextAlignment.LEFT, alignment)
+        }
     }
 
     @Test
-    fun `when payment method is not DEBIN then return texts details in payment info`() {
-        val payerPaymentMethod = mockkClass(CustomSearchItem::class)
+    fun `given payment method info comes from paymentData then paymentInfo texts are taken from paymentData display info`() {
         val paymentInfoBuilder = PaymentInfo.Builder()
-        val descriptionTitle = mockkClass(Text::class) {
-            every { message } returns DESCRIPTION_TITLE
-            every { backgroundColor } returns BACKGROUND_COLOR
-            every { textColor } returns TEXT_COLOR
-            every { weight } returns WEIGHT
-        }
-        val resultInfoMock = mockkClass(ResultInfo::class) {
-            every { title } returns RESULT_INFO_TITLE
-            every { subtitle } returns RESULT_INFO_SUBTITLE
-        }
-        val displayInfoMock = mockkClass(DisplayInfo::class) {
-            every { description } returns descriptionTitle
-            every { resultInfo } returns resultInfoMock
-        }
-        val paymentMethodMock = mockkClass(PaymentMethod::class) {
-            every { displayInfo } returns displayInfoMock
-        }
-        val paymentData = mockkClass(PaymentData::class) {
-            every { paymentMethod } returns paymentMethodMock
-        }
-
-        every { userSelectionRepository.customOptionId } returns CUSTOM_OPTION_ID
-        every { payerPaymentMethodRepository[CUSTOM_OPTION_ID] } returns payerPaymentMethod
-        every { payerPaymentMethod.bankTransferDisplayInfo } returns null
+        setupPaymentMethodFromPaymentData(null)
 
         displayInfoHelper.resolve(paymentData, paymentInfoBuilder)
 
@@ -140,9 +124,66 @@ class DisplayInfoHelperTest {
         assertEquals(RESULT_INFO_TITLE, paymentInfo.consumerCreditsInfo!!.title)
         assertEquals(RESULT_INFO_SUBTITLE, paymentInfo.consumerCreditsInfo!!.subtitle)
 
-        assertEquals(DESCRIPTION_TITLE, paymentInfo.paymentMethodDescriptionText!!.message)
-        assertEquals(BACKGROUND_COLOR, paymentInfo.paymentMethodDescriptionText!!.backgroundColor)
-        assertEquals(TEXT_COLOR, paymentInfo.paymentMethodDescriptionText!!.textColor)
-        assertEquals(WEIGHT, paymentInfo.paymentMethodDescriptionText!!.weight)
+        with(paymentInfo.description!!) {
+            assertEquals(DESCRIPTION_TITLE, message)
+            assertEquals(BACKGROUND_COLOR, backgroundColor)
+            assertEquals(TEXT_COLOR, textColor)
+            assertEquals(WEIGHT, weight)
+            assertEquals(TextAlignment.LEFT, alignment)
+        }
+    }
+
+    @Test
+    fun `given payer payment method contains extra info then paymentInfo should contain this extra info`() {
+        val paymentInfoBuilder = PaymentInfo.Builder()
+        val firstExtraInfoText = Text("1234", BACKGROUND_COLOR, TEXT_COLOR, WEIGHT, TextAlignment.CENTER)
+        val secondExtraInfoText = Text("12345", BACKGROUND_COLOR, TEXT_COLOR, WEIGHT, TextAlignment.LEFT)
+        setupPaymentMethodFromPaymentData(ExtraInfo(listOf(firstExtraInfoText, secondExtraInfoText)))
+
+        displayInfoHelper.resolve(paymentData, paymentInfoBuilder)
+        val paymentInfo = paymentInfoBuilder.build()
+        assertNotNull(paymentInfo.extraInfo)
+        with(paymentInfo.extraInfo!!) {
+            size.assertEquals(2)
+            assertPaymentCongratsText(get(0), firstExtraInfoText)
+            assertPaymentCongratsText(get(1), secondExtraInfoText)
+        }
+    }
+
+    private fun assertPaymentCongratsText(actual: PaymentCongratsText, expected: Text) {
+        with(actual) {
+            message.assertEquals(expected.message)
+            backgroundColor!!.assertEquals(expected.backgroundColor!!)
+            textColor!!.assertEquals(expected.textColor!!)
+            weight!!.assertEquals(expected.weight!!)
+            alignment.assertEquals(expected.alignment!!)
+        }
+    }
+
+    private fun setupPaymentMethodFromPaymentData(extraInfo: ExtraInfo?) {
+        val resultInfoMock = mockkClass(ResultInfo::class) {
+            every { title } returns RESULT_INFO_TITLE
+            every { subtitle } returns RESULT_INFO_SUBTITLE
+        }
+        val displayInfoMock = mockkClass(DisplayInfo::class) {
+            every { description } returns Text(DESCRIPTION_TITLE, BACKGROUND_COLOR, TEXT_COLOR, WEIGHT, null)
+            every { resultInfo } returns resultInfoMock
+        }
+        val paymentMethodMock = mockkClass(PaymentMethod::class) {
+            every { displayInfo } returns displayInfoMock
+        }
+
+        every { paymentData.paymentMethod } returns paymentMethodMock
+        every { userSelectionRepository.customOptionId } returns CUSTOM_OPTION_ID
+        every { payerPaymentMethodRepository[CUSTOM_OPTION_ID] } returns payerPaymentMethod
+        val displayInfo = extraInfo?.let {
+            mockkClass(CustomSearchItemDisplayInfo::class) {
+                every { result } returns mockkClass(CustomSearchItemDisplayInfo.Result::class)
+            }
+        }?.also {
+            every { it.result.paymentMethod } returns null
+            every { it.result.extraInfo } returns extraInfo
+        }
+        every { payerPaymentMethod.displayInfo } returns displayInfo
     }
 }

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
-import com.mercadopago.android.px.model.display_info.BankTransferDisplayInfo;
+import com.mercadopago.android.px.model.display_info.CustomSearchItemDisplayInfo;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class CustomSearchItem implements Serializable, Parcelable {
 
     private String escStatus;
 
-    @Nullable private BankTransferDisplayInfo displayInfo;
+    @Nullable private CustomSearchItemDisplayInfo displayInfo;
     @Nullable private String paymentMethodName;
     @Nullable private BankTransferInfo bankInfo;
 
@@ -71,7 +71,7 @@ public class CustomSearchItem implements Serializable, Parcelable {
         firstSixDigits = in.readString();
         issuer = in.readParcelable(Issuer.class.getClassLoader());
         escStatus = in.readString();
-        displayInfo = in.readParcelable(BankTransferDisplayInfo.class.getClassLoader());
+        displayInfo = in.readParcelable(CustomSearchItemDisplayInfo.class.getClassLoader());
         paymentMethodName = in.readString();
         bankInfo = in.readParcelable(BankTransferInfo.class.getClassLoader());
     }
@@ -177,7 +177,7 @@ public class CustomSearchItem implements Serializable, Parcelable {
     }
 
     @Nullable
-    public BankTransferDisplayInfo getBankTransferDisplayInfo() { return displayInfo; }
+    public CustomSearchItemDisplayInfo getDisplayInfo() { return displayInfo; }
 
     @Nullable
     public String getPaymentMethodName() { return paymentMethodName; }

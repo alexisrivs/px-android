@@ -94,7 +94,6 @@ internal class OneTapPresenter(
     private val chargeRepository: ChargeRepository,
     private val escManagerBehaviour: ESCManagerBehaviour,
     private val experimentsRepository: ExperimentsRepository,
-    private val payerComplianceRepository: PayerComplianceRepository,
     private val trackingRepository: TrackingRepository,
     private val customTextsRepository: CustomTextsRepository,
     private val oneTapItemRepository: OneTapItemRepository,
@@ -460,7 +459,6 @@ internal class OneTapPresenter(
         }
         checkoutUseCase.execute(Unit, {
             if (isViewAttached) {
-                payerComplianceRepository.turnIFPECompliant()
                 reload()
                 view.hideLoading()
             }

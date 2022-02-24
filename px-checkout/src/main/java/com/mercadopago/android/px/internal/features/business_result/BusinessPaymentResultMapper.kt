@@ -8,6 +8,7 @@ import com.mercadopago.android.px.internal.features.payment_result.CongratsAutoR
 import com.mercadopago.android.px.internal.features.payment_result.presentation.PaymentResultButton
 import com.mercadopago.android.px.internal.features.payment_result.presentation.PaymentResultFooter
 import com.mercadopago.android.px.internal.mappers.Mapper
+import com.mercadopago.android.px.internal.mappers.PaymentResultMethodMapper
 import com.mercadopago.android.px.internal.view.PaymentResultBody
 import com.mercadopago.android.px.internal.view.PaymentResultHeader
 import com.mercadopago.android.px.internal.view.PaymentResultMethod
@@ -16,7 +17,10 @@ import com.mercadopago.android.px.internal.viewmodel.PaymentResultType
 import com.mercadopago.android.px.tracking.internal.MPTracker
 import java.util.ArrayList
 
-internal class BusinessPaymentResultMapper(private val tracker: MPTracker) :
+internal class BusinessPaymentResultMapper(
+    private val tracker: MPTracker,
+    private val paymentResultMethodMapper: PaymentResultMethodMapper
+) :
     Mapper<PaymentCongratsModel, BusinessPaymentResultViewModel>() {
 
     override fun map(model: PaymentCongratsModel): BusinessPaymentResultViewModel {
@@ -32,8 +36,7 @@ internal class BusinessPaymentResultMapper(private val tracker: MPTracker) :
         val methodModels: MutableList<PaymentResultMethod.Model> = ArrayList()
         if (model.shouldShowPaymentMethod == true) {
             for (paymentInfo in model.paymentsInfo) {
-                methodModels.add(PaymentResultMethod.Model.with(paymentInfo,
-                    model.statementDescription))
+                methodModels.add(paymentResultMethodMapper.map(paymentInfo, model.statementDescription))
             }
         }
 

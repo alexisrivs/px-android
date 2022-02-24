@@ -35,13 +35,16 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     /* default */ final ResultViewTrack viewTracker;
     private final FlowBehaviour flowBehaviour;
     @Nullable /* default */ CongratsAutoReturn autoReturnTimer;
+    @NonNull final BusinessPaymentResultMapper businessPaymentResultMapper;
 
     /* default */ BusinessPaymentResultPresenter(@NonNull final PaymentCongratsModel model,
-        @NonNull final FlowBehaviour flowBehaviour, final boolean isMP, @NonNull final MPTracker tracker) {
+        @NonNull final FlowBehaviour flowBehaviour, final boolean isMP, @NonNull final MPTracker tracker,
+        @NonNull final BusinessPaymentResultMapper businessPaymentResultMapper) {
         super(tracker);
         this.model = model;
         this.flowBehaviour = flowBehaviour;
         viewTracker = new ResultViewTrack(model, isMP);
+        this.businessPaymentResultMapper = businessPaymentResultMapper;
     }
 
     @Override
@@ -78,7 +81,7 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     }
 
     private void configureView() {
-        final BusinessPaymentResultViewModel viewModel = new BusinessPaymentResultMapper(getTracker()).map(model);
+        final BusinessPaymentResultViewModel viewModel = businessPaymentResultMapper.map(model);
         getView().configureViews(viewModel, this, new PaymentResultFooter.Listener() {
             @Override
             public void onClick(@NonNull final ExitAction action) {

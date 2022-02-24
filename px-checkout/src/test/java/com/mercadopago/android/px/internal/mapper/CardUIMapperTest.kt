@@ -255,7 +255,7 @@ class CardUIMapperTest {
     // Helpers so we don't duplicate this code
 
     private fun Text.getTag() =
-        CardDrawerSource.Tag(message, Color.parseColor(backgroundColor), Color.parseColor(textColor), weight)
+        CardDrawerSource.Tag(message, Color.parseColor(backgroundColor), Color.parseColor(textColor), weight ?: "regular")
 
     private fun getOfflineMethodCardDisplayInfoWithSubtitle(): OfflineMethodCard.DisplayInfo? {
         return JsonUtil.fromJson("""{

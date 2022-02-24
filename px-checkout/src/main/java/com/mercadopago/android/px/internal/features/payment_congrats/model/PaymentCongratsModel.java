@@ -107,7 +107,7 @@ public class PaymentCongratsModel implements Parcelable {
         footerSecondaryAction = in.readParcelable(ExitAction.class.getClassLoader());
         statementDescription = in.readString();
         shouldShowPaymentMethod = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        paymentsInfo = in.createTypedArrayList(PaymentInfo.CREATOR);
+        paymentsInfo = ((PaymentsInfo) in.readParcelable(PaymentsInfo.class.getClassLoader())).getPaymentsInfo();
         topFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         bottomFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
         importantFragment = in.readParcelable(ExternalFragment.class.getClassLoader());
@@ -148,7 +148,7 @@ public class PaymentCongratsModel implements Parcelable {
         dest.writeParcelable(footerSecondaryAction, flags);
         dest.writeString(statementDescription);
         dest.writeValue(shouldShowPaymentMethod);
-        dest.writeTypedList(paymentsInfo);
+        dest.writeParcelable(new PaymentsInfo(paymentsInfo), flags);
         dest.writeParcelable(topFragment, flags);
         dest.writeParcelable(bottomFragment, flags);
         dest.writeParcelable(importantFragment, flags);
