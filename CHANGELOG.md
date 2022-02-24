@@ -1,3 +1,7 @@
+## VERSION 4.105.0
+_24_02_2022_
+* FEATURE - New wordings for IFPE regulation.
+
 ## VERSION 4.104.1
 _16_02_2022_
 * FIX - Crash when badge placeholder is 0.
