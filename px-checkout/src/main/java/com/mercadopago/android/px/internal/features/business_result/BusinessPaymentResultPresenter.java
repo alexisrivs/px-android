@@ -175,7 +175,7 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     }
 
     @Override
-    public void OnClickAdBannerViewLink(@NonNull final String deepLink) {
+    public void onClickAdBannerViewLink(@NonNull final String deepLink) {
         getView().launchDeepLink(deepLink);
     }
 }
