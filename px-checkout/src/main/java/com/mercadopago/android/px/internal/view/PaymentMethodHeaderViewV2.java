@@ -91,6 +91,6 @@ public class PaymentMethodHeaderViewV2 extends PaymentMethodHeaderView {
         if (isVisible)
             titlePager.setVisibility(View.VISIBLE);
         else
-            titlePager.setVisibility(View.INVISIBLE);
+            titlePager.setVisibility(View.GONE);
     }
 }
