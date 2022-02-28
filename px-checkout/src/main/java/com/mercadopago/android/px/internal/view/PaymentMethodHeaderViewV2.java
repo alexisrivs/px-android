@@ -80,12 +80,17 @@ public class PaymentMethodHeaderViewV2 extends PaymentMethodHeaderView {
 
     private void hideInstallments() {
         installmentsContainer.setVisibility(View.GONE);
-        titlePager.setVisibility(View.VISIBLE);
     }
 
     private void showInstallments() {
         installmentsContainer.setVisibility(View.VISIBLE);
-        titlePager.setVisibility(View.GONE);
         listener.onInstallmentViewUpdated();
+    }
+
+    public void changeVisibilityTitle(final boolean isVisible) {
+        if (isVisible)
+            titlePager.setVisibility(View.VISIBLE);
+        else
+            titlePager.setVisibility(View.INVISIBLE);
     }
 }

@@ -65,4 +65,6 @@ public abstract class PaymentMethodHeaderView extends FrameLayout {
             this.nextIsExpandable = nextIsExpandable;
         }
     }
+
+    public void changeVisibilityTitle(final boolean isVisible) { }
 }
