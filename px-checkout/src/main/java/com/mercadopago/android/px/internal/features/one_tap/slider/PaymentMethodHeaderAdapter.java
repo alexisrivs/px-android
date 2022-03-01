@@ -34,9 +34,9 @@ public class PaymentMethodHeaderAdapter
             data.get(currentIndex);
         paymentMethodDescriptorModelByApplication.update(application);
         final PaymentMethodDescriptorView.Model currentModel = paymentMethodDescriptorModelByApplication.getCurrent();
-        final boolean invisibleTitle = (splitSelectionState.userWantsToSplit() && !currentModel.hasPayerCostList());
         view.updateData(currentModel.hasPayerCostList(), currentModel instanceof DisabledPaymentMethodDescriptorModel);
-        view.changeVisibilityTitle(invisibleTitle);
+        if (application.getPaymentMethod().getType().equals("debit_card"))
+            view.changeVisibilityTitle(splitSelectionState.userWantsToSplit());
     }
 
     @Override
