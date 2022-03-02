@@ -35,8 +35,17 @@ public class PaymentMethodHeaderAdapter
         paymentMethodDescriptorModelByApplication.update(application);
         final PaymentMethodDescriptorView.Model currentModel = paymentMethodDescriptorModelByApplication.getCurrent();
         view.updateData(currentModel.hasPayerCostList(), currentModel instanceof DisabledPaymentMethodDescriptorModel);
-        if (application.getPaymentMethod().getType().equals("debit_card"))
-            view.changeVisibilityTitle(splitSelectionState.userWantsToSplit());
+        configureVisibilityTitle(application.getPaymentMethod().getType(),
+                                 splitSelectionState.userWantsToSplit(),
+                                 currentModel.hasPayerCostList());
+    }
+
+    private void configureVisibilityTitle(@NonNull final String paymentMethod, final boolean userWantsToSplit,
+        final boolean hasPayerCostList) {
+        if (paymentMethod.equals("debit_card"))
+            view.changeVisibilityTitle(userWantsToSplit);
+        else
+            view.changeVisibilityTitle(!hasPayerCostList);
     }
 
     @Override
