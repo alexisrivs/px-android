@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.internal.experiments.Variant;
 import com.mercadopago.android.px.internal.viewmodel.GoingToModel;
-
 import java.util.List;
 
 public abstract class PaymentMethodHeaderView extends FrameLayout {
