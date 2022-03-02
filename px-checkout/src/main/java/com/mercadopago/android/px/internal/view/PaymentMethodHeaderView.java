@@ -2,6 +2,7 @@ package com.mercadopago.android.px.internal.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -66,5 +67,10 @@ public abstract class PaymentMethodHeaderView extends FrameLayout {
         }
     }
 
-    public void changeVisibilityTitle(final boolean isVisible) { }
+    public void changeVisibilityTitle(final boolean isVisible) {
+        if (isVisible)
+            titlePager.setVisibility(View.VISIBLE);
+        else
+            titlePager.setVisibility(View.INVISIBLE);
+    }
 }
