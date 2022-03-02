@@ -11,7 +11,7 @@ internal class CheckoutConfigurationModule(context: Context) : ConfigurationModu
     val disabledPaymentMethodRepository: DisabledPaymentMethodRepository by lazy {
         DisabledPaymentMethodRepositoryImpl(fileManager)
     }
-    val payerComplianceRepository: PayerComplianceRepository by lazy { PayerComplianceRepositoryImpl(sharedPreferences, fileManager) }
+    val payerComplianceRepository: PayerComplianceRepository by lazy { PayerComplianceRepositoryImpl(fileManager) }
     private var internalChargeRepository: ChargeRepository? = null
     val chargeRepository: ChargeRepository
         get() {

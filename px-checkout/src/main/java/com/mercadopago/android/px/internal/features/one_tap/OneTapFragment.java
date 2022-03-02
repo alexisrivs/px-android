@@ -36,6 +36,7 @@ import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.experiments.ScrolledVariant;
 import com.mercadopago.android.px.internal.experiments.Variant;
 import com.mercadopago.android.px.internal.experiments.VariantHandler;
+import com.mercadopago.android.px.internal.features.TermsAndConditionsActivity;
 import com.mercadopago.android.px.internal.features.disable_payment_method.DisabledPaymentMethodDetailDialog;
 import com.mercadopago.android.px.internal.features.one_tap.add_new_card.OtherPaymentMethodFragment;
 import com.mercadopago.android.px.internal.features.one_tap.add_new_card.sheet_options.CardFormBottomSheetFragment;
@@ -69,6 +70,7 @@ import com.mercadopago.android.px.internal.util.VibrationUtils;
 import com.mercadopago.android.px.internal.view.DiscountDetailDialog;
 import com.mercadopago.android.px.internal.view.ElementDescriptorView;
 import com.mercadopago.android.px.internal.view.LabeledSwitch;
+import com.mercadopago.android.px.internal.view.LinkableTextView;
 import com.mercadopago.android.px.internal.view.PaymentMethodHeaderView;
 import com.mercadopago.android.px.internal.view.ScrollingPagerIndicator;
 import com.mercadopago.android.px.internal.view.SummaryView;
@@ -81,6 +83,7 @@ import com.mercadopago.android.px.internal.viewmodel.SplitSelectionState;
 import com.mercadopago.android.px.internal.viewmodel.drawables.DrawableFragmentItem;
 import com.mercadopago.android.px.model.Currency;
 import com.mercadopago.android.px.model.DiscountConfigurationModel;
+import com.mercadopago.android.px.model.TermsAndConditionsLinks;
 import com.mercadopago.android.px.model.PayerCost;
 import com.mercadopago.android.px.model.Site;
 import com.mercadopago.android.px.model.StatusMetadata;
@@ -99,8 +102,8 @@ import static android.view.View.VISIBLE;
 
 public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPager.OnPageChangeListener,
     SplitPaymentHeaderAdapter.SplitListener, PaymentMethodFragment.DisabledDetailDialogLauncher,
-    OtherPaymentMethodFragment.OnOtherPaymentMethodClickListener, TitlePagerAdapter.InstallmentChanged,
-    PayButton.Handler, GenericDialog.Listener, BackHandler, PaymentMethodFragment.PaymentMethodPagerListener {
+    OtherPaymentMethodFragment.OnOtherPaymentMethodClickListener, PayButton.Handler, GenericDialog.Listener,
+    BackHandler, PaymentMethodFragment.PaymentMethodPagerListener, LinkableTextView.LinkableTextListener {
 
     private static final String TAG = OneTapFragment.class.getSimpleName();
     private static final String TAG_HEADER_DYNAMIC_DIALOG = "TAG_HEADER_DYNAMIC_DIALOG";
@@ -197,6 +200,17 @@ public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPag
     @Override
     public void onApplicationChanged(@NonNull final String paymentTypeId) {
         presenter.onApplicationChanged(paymentTypeId);
+    }
+
+    @Override
+    public void onLinkClicked(@NonNull final TermsAndConditionsLinks installmentLink) {
+        final int installmentKey = titlePagerAdapter.getCurrentInstallment();
+        final String data = installmentLink.getLinkByInstallment(installmentKey);
+        final Context context = getActivity();
+
+        if (context != null) {
+            TermsAndConditionsActivity.start(context, data);
+        }
     }
 
     public interface CallBack {
@@ -354,12 +368,12 @@ public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPag
             @Override
             public void visit(@NonNull final ScrolledVariant variant) {
                 if (variant.isDefault()) {
-                    titlePagerAdapter = new TitlePagerAdapter(titlePager, OneTapFragment.this);
+                    titlePagerAdapter = new TitlePagerAdapter(titlePager);
                     installmentsAdapter = new InstallmentsAdapter(OneTapFragment.this::onInstallmentSelected);
                     expandAndCollapseAnimation = new ExpandAndCollapseAnimation(installmentsRecyclerView);
                     installmentsRecyclerView.setVisibility(GONE);
                 } else {
-                    titlePagerAdapter = new TitlePagerAdapterV2(titlePager, OneTapFragment.this);
+                    titlePagerAdapter = new TitlePagerAdapterV2(titlePager);
                     installmentsAdapter = new InstallmentsAdapterV2(OneTapFragment.this::onInstallmentSelected);
                 }
             }
@@ -393,7 +407,7 @@ public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPag
             session.getAmountConfigurationRepository(),
             session.getConfigurationModule().getChargeRepository(),
             session.getMercadoPagoESC(),
-            session.getExperimentsRepository(), configurationModule.getPayerComplianceRepository(),
+            session.getExperimentsRepository(),
             configurationModule.getTrackingRepository(), configurationModule.getCustomTextsRepository(),
             session.getOneTapItemRepository(), session.getPayerPaymentMethodRepository(), session.getModalRepository(),
             session.getCustomOptionIdSolver(),
@@ -515,11 +529,6 @@ public class OneTapFragment extends BaseFragment implements OneTap.View, ViewPag
         if (expandAndCollapseAnimation != null) {
             expandAndCollapseAnimation.expand();
         }
-    }
-
-    @Override
-    public void installmentSelectedChanged(final int installment) {
-        paymentMethodFragmentAdapter.updateInstallment(installment);
     }
 
     private void animateViewPagerDown() {

@@ -45,6 +45,7 @@ dependencies {
     }
     api project(':px-services')
     implementation project(':px-addons')
+    implementation project(':px-core')
 
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.mercadolibre.android:ui:$ui"

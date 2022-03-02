@@ -327,6 +327,29 @@ public class FooterPaymentResultTest {
     }
 
     @Test
+    public void testRejectedCapExceededPaymentResult() {
+        when(context.getString(R.string.px_change_payment_method)).thenReturn(LABEL_CHANGE);
+        when(context.getString(R.string.px_button_text_go_to_home)).thenReturn(LABEL_GO_TO_HOME);
+
+        final PaymentResult paymentResult = PaymentResults.getStatusRejectedCapExceeded();
+        final FooterPaymentResult footerPaymentResult =
+                new FooterPaymentResult(factory, paymentResult, actionDispatcher);
+
+        final Footer.Props props = footerPaymentResult.getFooterProps(context);
+
+        assertNotNull(props);
+        assertNotNull(props.buttonAction);
+        assertEquals(LABEL_CHANGE, props.buttonAction.label);
+        assertNotNull(props.buttonAction.action);
+        assertTrue(props.buttonAction.action instanceof ChangePaymentMethodAction);
+
+        assertNotNull(props.linkAction);
+        assertEquals(LABEL_GO_TO_HOME, props.linkAction.label);
+        assertNotNull(props.linkAction.action);
+        assertTrue(props.linkAction.action instanceof NextAction);
+    }
+
+    @Test
     public void testRejectedByRegulationsPaymentResult() {
         when (context.getString(R.string.px_change_payment_method)).thenReturn(LABEL_CHANGE);
 

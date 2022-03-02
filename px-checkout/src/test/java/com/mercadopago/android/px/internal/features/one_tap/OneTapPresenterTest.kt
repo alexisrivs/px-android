@@ -190,7 +190,6 @@ class OneTapPresenterTest {
             chargeRepository,
             escManagerBehaviour,
             experimentsRepository,
-            payerComplianceRepository,
             trackingRepository,
             mockk(),
             oneTapItemRepository,

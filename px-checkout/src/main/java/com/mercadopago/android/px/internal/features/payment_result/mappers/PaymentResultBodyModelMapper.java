@@ -9,6 +9,7 @@ import com.mercadopago.android.px.internal.features.payment_congrats.model.Payme
 import com.mercadopago.android.px.internal.features.payment_congrats.model.CongratsViewModelMapper;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentInfo;
 import com.mercadopago.android.px.internal.features.payment_result.model.DisplayInfoHelper;
+import com.mercadopago.android.px.internal.mappers.PaymentResultMethodMapper;
 import com.mercadopago.android.px.internal.util.CurrenciesUtil;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
 import com.mercadopago.android.px.internal.view.PaymentResultBody;
@@ -28,12 +29,15 @@ public class PaymentResultBodyModelMapper extends Mapper<PaymentModel, PaymentRe
     @NonNull private final PaymentResultScreenConfiguration configuration;
     @NonNull private final MPTracker tracker;
     @NonNull private final DisplayInfoHelper displayInfoHelper;
+    @NonNull private final PaymentResultMethodMapper paymentResultMethodMapper;
 
     public PaymentResultBodyModelMapper(@NonNull final PaymentResultScreenConfiguration configuration,
-        @NonNull final MPTracker tracker, @NonNull final DisplayInfoHelper displayInfoHelper) {
+        @NonNull final MPTracker tracker, @NonNull final DisplayInfoHelper displayInfoHelper,
+        @NonNull final PaymentResultMethodMapper paymentResultMethodMapper) {
         this.configuration = configuration;
         this.tracker = tracker;
         this.displayInfoHelper = displayInfoHelper;
+        this.paymentResultMethodMapper = paymentResultMethodMapper;
     }
 
     @Override
@@ -45,7 +49,12 @@ public class PaymentResultBodyModelMapper extends Mapper<PaymentModel, PaymentRe
         for (final PaymentData paymentData : paymentResult.getPaymentDataList()) {
             final String imageUrl =
                 model.getCongratsResponse().getPaymentMethodsImages().get(paymentData.getPaymentMethod().getId());
-            methodModels.add(PaymentResultMethod.Model.with(getPaymentInfo(imageUrl, paymentData, model.getCurrency()), null));
+            methodModels.add(
+                paymentResultMethodMapper.map(
+                    getPaymentInfo(imageUrl, paymentData, model.getCurrency()),
+                    null
+                )
+            );
         }
 
         return new PaymentResultBody.Model.Builder()

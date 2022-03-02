@@ -32,7 +32,7 @@ class Badge(context: Context, attrs: AttributeSet?, defStyleAttr: Int): LinearLa
         setBadgeBackgroundColor(text.backgroundColor)
     }
 
-    private fun setBadgeBackgroundColor(color: String) {
+    private fun setBadgeBackgroundColor(color: String?) {
         ViewUtils.setDrawableBackgroundColor(this, color)
     }
 
