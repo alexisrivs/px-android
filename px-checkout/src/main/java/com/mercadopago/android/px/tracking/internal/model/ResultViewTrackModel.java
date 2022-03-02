@@ -5,15 +5,12 @@ import androidx.annotation.Nullable;
 import com.mercadopago.android.px.configuration.PaymentResultScreenConfiguration;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.FromPaymentCongratsDiscountItemToItemId;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsModel;
-import com.mercadopago.android.px.internal.repository.PayerPaymentMethodRepository;
-import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
 import com.mercadopago.android.px.internal.util.PaymentDataHelper;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.internal.viewmodel.PaymentModel;
-import com.mercadopago.android.px.model.CustomSearchItem;
 import com.mercadopago.android.px.model.PaymentData;
-import com.mercadopago.android.px.model.PaymentMethods;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
+import com.mercadopago.android.px.tracking.internal.BankInfoHelper;
 import com.mercadopago.android.px.tracking.internal.TrackingHelper;
 import com.mercadopago.android.px.tracking.internal.mapper.FromDiscountItemToItemId;
 import java.math.BigDecimal;
@@ -47,7 +44,7 @@ public final class ResultViewTrackModel extends TrackingMapModel {
     public ResultViewTrackModel(@NonNull final PaymentModel paymentModel,
         @NonNull final PaymentResultScreenConfiguration screenConfiguration,
         @NonNull final CheckoutPreference checkoutPreference, @NonNull final String currencyId, final boolean isMP,
-        @NonNull final PayerPaymentMethodRepository payerPaymentMethodRepository, @NonNull final UserSelectionRepository userSelectionRepository) {
+        @NonNull final BankInfoHelper bankInfoHelper) {
         this(Style.GENERIC,
             paymentModel.getPaymentResult().getPaymentId(),
             paymentModel.getPaymentResult().getPaymentStatus(),
@@ -71,16 +68,16 @@ public final class ResultViewTrackModel extends TrackingMapModel {
                 .getPaymentResult().getPaymentData().getPaymentMethod().getPaymentTypeId() : null,
             currencyId,
             paymentModel.getPaymentResult().getPaymentData(),
-            getBankName(payerPaymentMethodRepository, userSelectionRepository, paymentModel.getPaymentResult().getPaymentData().getPaymentMethod().getId()),
-            getExternalAccountId(payerPaymentMethodRepository, userSelectionRepository, paymentModel.getPaymentResult().getPaymentData().getPaymentMethod().getId()));
+            bankInfoHelper.getBankName(paymentModel.getPaymentResult().getPaymentData().getPaymentMethod().getId()),
+            bankInfoHelper.getExternalAccountId(paymentModel.getPaymentResult().getPaymentData().getPaymentMethod().getId())
+        );
         hasBottomView = screenConfiguration.hasBottomFragment();
         hasTopView = screenConfiguration.hasTopFragment();
         hasImportantView = false;
         hasMoneySplitView = isMP && paymentModel.getCongratsResponse().getMoneySplit() != null;
     }
 
-    public ResultViewTrackModel(@NonNull final PaymentCongratsModel paymentCongratsModel, final boolean isMP,
-        @NonNull final PayerPaymentMethodRepository payerPaymentMethodRepository, @NonNull final UserSelectionRepository userSelectionRepository) {
+    public ResultViewTrackModel(@NonNull final PaymentCongratsModel paymentCongratsModel, final boolean isMP, @NonNull final BankInfoHelper bankInfoHelper) {
         this(Style.CUSTOM,
             paymentCongratsModel.getPaymentId(),
             TrackingHelper.getPaymentStatus(paymentCongratsModel),
@@ -102,8 +99,8 @@ public final class ResultViewTrackModel extends TrackingMapModel {
             paymentCongratsModel.getPxPaymentCongratsTracking().getPaymentMethodType().toLowerCase(),
             paymentCongratsModel.getPxPaymentCongratsTracking().getCurrencyId(),
             paymentCongratsModel.getPaymentData(),
-            getBankName(payerPaymentMethodRepository, userSelectionRepository, paymentCongratsModel.getPxPaymentCongratsTracking().getPaymentMethodId()),
-            getExternalAccountId(payerPaymentMethodRepository, userSelectionRepository, paymentCongratsModel.getPxPaymentCongratsTracking().getPaymentMethodId()));
+            bankInfoHelper.getBankName(paymentCongratsModel.getPxPaymentCongratsTracking().getPaymentMethodId()),
+            bankInfoHelper.getExternalAccountId(paymentCongratsModel.getPxPaymentCongratsTracking().getPaymentMethodId()));
         hasBottomView = paymentCongratsModel.hasBottomFragment();
         hasTopView = paymentCongratsModel.hasTopFragment();
         hasMoneySplitView = isMP && paymentCongratsModel.getPaymentCongratsResponse().getExpenseSplit() != null;
@@ -150,32 +147,6 @@ public final class ResultViewTrackModel extends TrackingMapModel {
 
         Style(@NonNull final String value) {
             this.value = value;
-        }
-    }
-
-    @Nullable
-    private static String getExternalAccountId(@NonNull final PayerPaymentMethodRepository payerPaymentMethodRepository,
-                                               @NonNull final UserSelectionRepository userSelectionRepository,
-                                               @Nullable final String paymentMethodId) {
-        final String customOptionId = userSelectionRepository.getCustomOptionId();
-        if (customOptionId != null && paymentMethodId != null && paymentMethodId.equals(PaymentMethods.ARGENTINA.DEBIN)) {
-            final CustomSearchItem payerPaymentMethod = payerPaymentMethodRepository.get(customOptionId);
-            return payerPaymentMethod != null ? payerPaymentMethod.getId() : null;
-        } else {
-            return null;
-        }
-    }
-
-    @Nullable
-    private static String getBankName(@NonNull final PayerPaymentMethodRepository payerPaymentMethodRepository,
-                                      @NonNull final UserSelectionRepository userSelectionRepository,
-                                      @Nullable final String paymentMethodId) {
-        final String customOptionId = userSelectionRepository.getCustomOptionId();
-        if (customOptionId != null &&  paymentMethodId != null && paymentMethodId.equals(PaymentMethods.ARGENTINA.DEBIN)) {
-            final CustomSearchItem payerPaymentMethod = payerPaymentMethodRepository.get(customOptionId);
-            return payerPaymentMethod != null && payerPaymentMethod.getBankInfo() != null ? payerPaymentMethod.getBankInfo().getName() : null;
-        } else {
-            return null;
         }
     }
 }

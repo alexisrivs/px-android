@@ -3,13 +3,9 @@ package com.mercadopago.android.px.tracking.internal.model;
 import android.os.Parcel;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
-import com.mercadopago.android.px.internal.repository.PayerPaymentMethodRepository;
-import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
 import com.mercadopago.android.px.tracking.internal.BankInfoHelper;
-import com.mercadopago.android.px.tracking.internal.mapper.FromUserSelectionToAvailableMethod;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 @Keep
@@ -38,12 +34,6 @@ public class ConfirmData extends AvailableMethod {
         extraInfo.put("has_payer_information", isCompliant);
         extraInfo.put("additional_information_needed", hasAdditionalInfoNeeded);
         return new ConfirmData(ReviewType.ONE_TAP, new AvailableMethod(paymentMethodId, paymentTypeId, extraInfo), bankInfoHelper);
-    }
-
-    public static ConfirmData from(@NonNull final Set<String> cardsWithEsc,
-        @NonNull final UserSelectionRepository userSelectionRepository, @NonNull final BankInfoHelper bankInfoHelper) {
-        final AvailableMethod availableMethod = new FromUserSelectionToAvailableMethod(cardsWithEsc).map(userSelectionRepository);
-        return new ConfirmData(ReviewType.TRADITIONAL, availableMethod, userSelectionRepository);
     }
 
     public ConfirmData(@NonNull final ReviewType reviewType, final int paymentMethodSelectedIndex,

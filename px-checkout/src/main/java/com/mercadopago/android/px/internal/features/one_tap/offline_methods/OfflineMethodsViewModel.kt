@@ -13,6 +13,7 @@ import com.mercadopago.android.px.internal.viewmodel.AmountLocalized
 import com.mercadopago.android.px.model.OfflineMethodsCompliance
 import com.mercadopago.android.px.model.SensitiveInformation
 import com.mercadopago.android.px.model.internal.PaymentConfiguration
+import com.mercadopago.android.px.tracking.internal.BankInfoHelper
 import com.mercadopago.android.px.tracking.internal.MPTracker
 import com.mercadopago.android.px.tracking.internal.events.BackEvent
 import com.mercadopago.android.px.tracking.internal.events.ConfirmEvent
@@ -29,8 +30,7 @@ internal class OfflineMethodsViewModel(
     private val discountRepository: DiscountRepository,
     private val oneTapItemRepository: OneTapItemRepository,
     private val payerComplianceRepository: PayerComplianceRepository,
-    private val payerPaymentMethodRepository: PayerPaymentMethodRepository,
-    private val userSelectionRepository: UserSelectionRepository,
+    private val bankInfoHelper: BankInfoHelper,
     tracker: MPTracker) : BaseViewModel(tracker), OfflineMethods.ViewModel {
 
     private lateinit var viewTracker: OfflineMethodsViewTracker
@@ -94,8 +94,7 @@ internal class OfflineMethodsViewModel(
 
     override fun onPaymentExecuted(configuration: PaymentConfiguration) {
         val confirmData = ConfirmData.from(configuration.paymentTypeId, configuration.paymentMethodId,
-            payerCompliance?.isCompliant == true, selectedItem?.isAdditionalInfoNeeded == true,
-            payerPaymentMethodRepository, userSelectionRepository)
+            payerCompliance?.isCompliant == true, selectedItem?.isAdditionalInfoNeeded == true, bankInfoHelper)
         track(ConfirmEvent(confirmData))
     }
 
