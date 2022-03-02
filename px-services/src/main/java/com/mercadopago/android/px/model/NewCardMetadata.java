@@ -14,6 +14,10 @@ public final class NewCardMetadata implements Parcelable, Serializable {
     private final Text description;
     private final String version;
     private final CardFormInitType cardFormInitType;
+    @Nullable private final String deepLink;
+    private final String iconUrl;
+    private final PXBorder border;
+    private final String backgroundColor;
 
     @Nullable
     private final ArrayList<CardFormOption> sheetOptions;
@@ -47,6 +51,23 @@ public final class NewCardMetadata implements Parcelable, Serializable {
     }
 
     @Nullable
+    public String getDeepLink() {
+        return deepLink;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public PXBorder getBorder() {
+        return border;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    @Nullable
     public ArrayList<CardFormOption> getSheetOptions() {
         return sheetOptions;
     }
@@ -57,6 +78,10 @@ public final class NewCardMetadata implements Parcelable, Serializable {
         version = in.readString();
         cardFormInitType = CardFormInitType.valueOf(in.readString());
         sheetOptions = in.readArrayList(CardFormOption.class.getClassLoader());
+        deepLink = in.readString();
+        iconUrl = in.readString();
+        border =  in.readParcelable(PXBorder.class.getClassLoader());
+        backgroundColor = in.readString();
     }
 
     @Override
@@ -66,6 +91,10 @@ public final class NewCardMetadata implements Parcelable, Serializable {
         dest.writeString(version);
         dest.writeString(cardFormInitType != null ? cardFormInitType.name() : CardFormInitType.STANDARD.name());
         dest.writeList(sheetOptions);
+        dest.writeString(deepLink);
+        dest.writeString(iconUrl);
+        dest.writeParcelable(border, flags);
+        dest.writeString(backgroundColor);
     }
 
     @Override
