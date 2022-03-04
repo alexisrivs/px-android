@@ -116,6 +116,18 @@ public class CongratsViewModelMapper extends Mapper<PaymentCongratsResponse, Con
             public String getUrlDeepLink() {
                 return adBanner.getUrlDeepLink();
             }
+
+            @NonNull
+            @Override
+            public String getUrlClick() {
+                return adBanner.getUrlClick();
+            }
+
+            @NonNull
+            @Override
+            public String getUrlPrint() {
+                return adBanner.getUrlPrint();
+            }
         };
     }
 

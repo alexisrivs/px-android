@@ -67,7 +67,9 @@ data class PaymentCongratsResponse(
     @Parcelize
     data class AdBanner(
         val urlImage: String,
-        val urlDeepLink: String
+        val urlDeepLink: String,
+        val urlClick: String,
+        val urlPrint: String
     ): Parcelable
 
     @Parcelize
