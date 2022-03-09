@@ -41,7 +41,7 @@ public final class PaymentCongratsMock {
             new PaymentCongratsResponse.Loyalty(progress, "Sumaste 1 Mercado Punto", action);
 
         //Ad Banner
-        PaymentCongratsResponse.AdBanner adBanner = new PaymentCongratsResponse.AdBanner("https://http2.mlstatic.com/D_NQ_750106-MLA46995964779_082021-F.webp", "https://mercadolibre.com.ar");
+        PaymentCongratsResponse.AdBanner adBanner = new PaymentCongratsResponse.AdBanner("https://http2.mlstatic.com/D_NQ_750106-MLA46995964779_082021-F.webp", "mercadopago://webview?url=https%3A%2F%2Fwww.mercadopago.com.ar%2Fmp%2Finvita-y-gana%2Fwebview%3Futm_source%3Dapp%26utm_medium%3Dcongrats%26utm_campaign%3Dcongrats&from=MLA_MP_BANN-MP_X_P_MGM_ADQ_ALL_20220114_TEST-CONGRATS_V3");
 
         //Payment Methods
         ArrayList<PaymentInfo> paymentList = new ArrayList();

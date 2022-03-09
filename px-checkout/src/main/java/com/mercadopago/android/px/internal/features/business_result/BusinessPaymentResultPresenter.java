@@ -14,6 +14,7 @@ import com.mercadopago.android.px.internal.view.PaymentResultBody;
 import com.mercadopago.android.px.model.ExitAction;
 import com.mercadopago.android.px.model.internal.PrimaryExitAction;
 import com.mercadopago.android.px.model.internal.SecondaryExitAction;
+import com.mercadopago.android.px.services.MercadoPagoBannerService;
 import com.mercadopago.android.px.tracking.internal.MPTracker;
 import com.mercadopago.android.px.tracking.internal.events.AbortEvent;
 import com.mercadopago.android.px.tracking.internal.events.CongratsSuccessDeepLink;
@@ -177,5 +178,6 @@ import com.mercadopago.android.px.tracking.internal.views.ResultViewTrack;
     @Override
     public void onClickAdBannerViewLink(@NonNull final String deepLink) {
         getView().launchDeepLink(deepLink);
+
     }
 }
