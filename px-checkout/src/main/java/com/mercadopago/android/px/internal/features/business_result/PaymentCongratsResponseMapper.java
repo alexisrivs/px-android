@@ -39,8 +39,13 @@ public class PaymentCongratsResponseMapper extends Mapper<CongratsResponse, Paym
 
     private PaymentCongratsResponse.AdBanner getAdBanner(final CongratsResponse.AdBanner adBanner) {
         if (adBanner != null) {
-            return new PaymentCongratsResponse.AdBanner(adBanner.getUrlImage(),
-                            adBanner.getUrlDeepLink());
+            final CongratsResponse.AdBanner.Content content = adBanner.getContent();
+            return new PaymentCongratsResponse.AdBanner(
+                    content.getUrlImage(),
+                    content.getUrlDeepLink(),
+                    content.getUrlDestination(),
+                    content.getUrlPrint()
+            );
         }
         return null;
     }
