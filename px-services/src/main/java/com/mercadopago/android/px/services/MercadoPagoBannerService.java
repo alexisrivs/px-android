@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.mercadopago.android.px.internal.services.BannerAPIService;
 import com.mercadopago.android.px.internal.util.RetrofitUtil;
-import com.mercadopago.android.px.model.exceptions.ApiException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -21,7 +20,7 @@ public class MercadoPagoBannerService {
         this.retrofitClient = RetrofitUtil.getRetrofitClient(context);
     }
 
-    public void sendClick(@NonNull String url){
+    public void sendClick(@NonNull String url) {
         final BannerAPIService preferenceService = retrofitClient.create(BannerAPIService.class);
         preferenceService.sendClicksAPI(url).enqueue(new retrofit2.Callback<Void>() {
 
@@ -37,13 +36,13 @@ public class MercadoPagoBannerService {
         });
     }
 
-    public void sendPrint(@NonNull String url){
+    public void sendPrint(@NonNull String url) {
         final BannerAPIService preferenceService = retrofitClient.create(BannerAPIService.class);
         preferenceService.sendPrintsAPI(url).enqueue(new retrofit2.Callback<Void>() {
 
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     System.out.println("error msj");
                 }
             }
@@ -54,5 +53,4 @@ public class MercadoPagoBannerService {
             }
         });
     }
-
 }

@@ -1,21 +1,20 @@
 package com.mercadopago.android.px.internal.view;
 
-import static androidx.core.content.ContextCompat.startActivity;
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMP;
+import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMPInstalled;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
-import android.content.Intent;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.mercadolibre.android.andesui.message.AndesMessage;
 import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardView;
 import com.mercadolibre.android.mlbusinesscomponents.components.actioncard.MLBusinessActionCardViewData;
@@ -39,15 +38,11 @@ import com.mercadopago.android.px.internal.features.business_result.CongratsView
 import com.mercadopago.android.px.internal.features.business_result.PXDiscountBoxData;
 import com.mercadopago.android.px.internal.features.payment_congrats.model.PaymentCongratsResponse;
 import com.mercadopago.android.px.internal.util.FragmentUtil;
-import com.mercadopago.android.px.internal.util.Logger;
 import com.mercadopago.android.px.internal.util.TextUtil;
 import com.mercadopago.android.px.model.ExternalFragment;
 import com.mercadopago.android.px.services.MercadoPagoBannerService;
 
 import java.util.List;
-
-import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMP;
-import static com.mercadopago.android.px.internal.util.MercadoPagoUtil.isMPInstalled;
 
 public final class PaymentResultBody extends LinearLayout {
 
@@ -137,20 +132,15 @@ public final class PaymentResultBody extends LinearLayout {
         }
     }
 
-    private void renderAdBanner(@Nullable final MLBusinessAdBannerData adBannerData, @NonNull final Listener onClickAdBanner){
+    private void renderAdBanner(@Nullable final MLBusinessAdBannerData adBannerData, @NonNull final Listener onClickAdBanner) {
         final MLBusinessAdBannerView adBannerView = findViewById(R.id.adBannerView);
         MercadoPagoBannerService mercadoPagoBannerService = new MercadoPagoBannerService(getContext());
-        mercadoPagoBannerService.sendPrint("9%2FIXYnP3owBpTPMD7jEwJx5vrhRIbx8dbVmDIEHpWI8gp3SKlHdTXoLetytKegnYqd%2BBJ6ipNVIiyF0oCczQNehj2CRk9%2Bwjk7NJogxLsbMqxvrqcQt3m53iTEFJdrvcOgRZJ%2FF6SHX569%2F%2Fg7%2FSZE8%2BpFNOkRr9IZ7J7W2JYFZXd8PN2e8uoImzYktV6LgsS1oKoBJqrvM%2FBKIX2ZRowUNmPicPF%2F%2BOfVj7JnpFuEnm6W6uLpS1JeW2rIzQx3xo%2FzcmLtpnWFdj0%2BHxuf%2FGL1bcB0JFSaOGfQgaF%2FmnyOJ3y0RtUYBx36XoLuq9rzAH9OGAMerdkyvcTXpjBNSG9W%2B0P4ro6FHyIGvgwZ%2BtLJa2j6p8iXJC3fCgW7pPQ1HG%2FRa742Xd%2Bx4ukTeovbMCmLD6");
-        if(adBannerData != null) {
-            adBannerView.init(adBannerData, onClickAdBanner);
+        mercadoPagoBannerService.sendPrint(adBannerData.getUrlPrint());
+        if (adBannerData != null) {
+            adBannerView.init(adBannerData, onClickAdBanner, mercadoPagoBannerService::sendClick);
         } else {
             adBannerView.setVisibility(GONE);
         }
-
-        adBannerView.setOnClickListener(v -> {
-            mercadoPagoBannerService.sendClick("FlkALdG%2FIV5aiKwOEyxyquQ%2FVEZpw%2FD1slWmUIDlUjMNpx%2Beo6qytI0NWglb%2BGzN2Mm8iQclZXstohYI59oCoHlwfS3Lw9DV0G1H%2FlVTJaHaeinHKjAOpldJM48U4W%2BT1aV19JEQ1gnzke%2FxWy3OTbkaWiZv%2BY6bJC7EzVkJNZe7%2B89LoB0ANOOU3Tdb0sTr8QNUMX9VhF%2FGBLntLE%2Fhe%2Feujg1%2FU%2Fz6F266t4AHbZ2qDAEYVZpIcN%2By4gIA7R3gBpMDGlGi0xrWtQ%2F8Tf7PKnIejlK05SzNhSHmCr%2FrSf2ANjIYGDLXpNbzG6N1AilW9EzW%2Fvaf");
-            onClickAdBanner.onClickAdBannerViewLink(adBannerData.getUrlDeepLink());
-        });
     }
 
     private void sendLoyaltyInfoToBroadcaster(MLBusinessLoyaltyRingData loyaltyData) {

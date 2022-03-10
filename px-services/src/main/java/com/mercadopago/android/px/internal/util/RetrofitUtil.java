@@ -29,7 +29,7 @@ public final class RetrofitUtil {
 
         return new Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(JsonUtil.getGson()))
             .client(HttpClientUtil.getClient(context, connectTimeout, readTimeout, writeTimeout))
             .addCallAdapterFactory(new ErrorHandlingCallAdapter.ErrorHandlingCallAdapterFactory())
             .build();
